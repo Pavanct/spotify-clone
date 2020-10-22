@@ -7,6 +7,8 @@ import LibraryMusicIcon from "@material-ui/icons/LibraryMusic";
 import { getTokenFromResponse } from "./spotify";
 import { useDataLayerValue } from "./DataLayer";
 
+
+
 function SideBar() {
   const [{ playlists }, dispatch] = useDataLayerValue();
   console.log(playlists);
@@ -25,7 +27,11 @@ function SideBar() {
       <strong className="sidebar__title">PLAYLISTS</strong>
       <hr />
       {playlists?.items?.map((playlist) => (
-        <SideBarOption option={playlist.name} key={playlist.name} />
+        <SideBarOption
+          option={playlist.name}
+          playlist={playlist}
+          key={playlist.name}
+        />
       ))}
     </div>
   );
