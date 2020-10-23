@@ -40,7 +40,7 @@ function SideBar({spotify}) {
       <br />
       <strong className="sidebar__title">PLAYLISTS</strong>
       <hr />
-      <InfiniteScroll dataLength={50}>
+      <InfiniteScroll dataLength={10}>
         {playlists?.items?.map((playlist) => (
           <SideBarOption
             option={playlist.name}
