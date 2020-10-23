@@ -8,22 +8,18 @@ import SongRow from "./SongRow";
 function Body({ selectedPlaylist, spotify }) {
   const viewHeight = window.outerHeight;
   const [tracks, setTracks] = useState();
-  const [{playlists, playedPlaylist}, dispatch] = useDataLayerValue();
+  const [images, setImages] = useState();
+  const [{ playlists }, dispatch] = useDataLayerValue();
   console.log("selectedPlaylist", selectedPlaylist);
 
-  useEffect(() => {
-    console.log("lists", playedPlaylist);
-    spotify.getPlaylistTracks(playedPlaylist?.id).then((tracks) => {
-      setTracks(tracks);
-    });
-  }, [playedPlaylist]);
-
-  useEffect(() => {
-    spotify.getPlaylistTracks(selectedPlaylist?.id).then((tracks) => {
+  useEffect( () => {
+    (async () => {
+    await spotify.getPlaylistTracks(selectedPlaylist?.id).then((tracks) => {
       console.log("tracks", tracks);
       setTracks(tracks);
-    });
-  }, [selectedPlaylist]);
+      setImages(selectedPlaylist.images[0]);
+    }); })()
+  }, [selectedPlaylist]) ;
 
   const playSong = (id) => {
     spotify
@@ -49,14 +45,25 @@ function Body({ selectedPlaylist, spotify }) {
     <div className="body">
       <Header spotify={spotify} />
       {/* Playlist heading and thumbnail */}
+      <div className="body__info">
+        <img src={images?.url} alt="playlist_cover" />
+        <div className="body__infoText">
+          <h2>{selectedPlaylist.name}</h2>
+          <p>{selectedPlaylist?.description}</p>
+        </div>
+      </div>
       {/* filter bar */}
       {/* List of songs with title, artist, album, date,
          duration of song and click of the item song should play */}
       <InfiniteScroll dataLength={10}>
         {tracks ? (
-          tracks?.items?.map(
-            (item) => (<SongRow track={item.track} playSong={playSong} key={item.track?.id}/>)
-          )
+          tracks?.items?.map((item) => (
+            <SongRow
+              track={item.track}
+              playSong={playSong}
+              key={item.track?.id}
+            />
+          ))
         ) : (
           <h1> No tracks </h1>
         )}
