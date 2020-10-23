@@ -30,15 +30,32 @@ function App() {
       });
 
       spotify.getUserPlaylists().then((playlists) => {
+        console.log("playlists", playlists)
         dispatch({
           type: "SET_PLAYLISTS",
           playlists,
         });
       });
+
+      spotify.getMySavedAlbums({limit: 50}).then((savedAlbums) => {
+        console.log("savedAlbums", savedAlbums);
+        dispatch({
+          type: "SET_SAVED_ALBUMS",
+          savedAlbums,
+        });
+      })
+
+      spotify.getMyTopArtists().then((myTopArtists)=>{
+        console.log("myTopArtists", myTopArtists);
+        dispatch({
+          type: "SET_MY_TOP_ARTISTS",
+          myTopArtists,
+        });
+      })
     }
   }, []);
-  console.log("token", token);
-  console.log("user", user);
+  // console.log("token", token);
+  // console.log("user", user);
   return (
     <div className="App">
       {token ? <Player spotify={spotify} /> : <Login />}
