@@ -4,13 +4,30 @@ import "./Body.css";
 import { useDataLayerValue } from "./DataLayer";
 import Header from "./Header";
 import SongRow from "./SongRow";
+import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
+import { Tooltip } from "@material-ui/core";
 
 function Body({ selectedPlaylist, spotify }) {
-  const viewHeight = window.outerHeight;
   const [tracks, setTracks] = useState();
   const [images, setImages] = useState();
+  const [selectedTrack, setSelectedTrack] = useState();
   const [{ playlists }, dispatch] = useDataLayerValue();
   console.log("selectedPlaylist", selectedPlaylist);
+
+  
+  let callback = (value) => {
+    if (typeof value !== "string") {
+      // console.log("selectedTrack", value);
+      setSelectedTrack(value);
+      playSong(value.id);
+      dispatch({
+      type: "SELECTED_TRACK",
+      selectedTrack: value,
+    });
+    }
+  };
 
   useEffect( () => {
     (async () => {
@@ -21,7 +38,28 @@ function Body({ selectedPlaylist, spotify }) {
     }); })()
   }, [selectedPlaylist]) ;
 
+
+    const playPlaylist = (id) => {
+      spotify
+        .play({
+          context_uri: selectedPlaylist?.uri,
+        })
+        .then((res) => {
+          spotify.getMyCurrentPlayingTrack().then((r) => {
+            dispatch({
+              type: "SELECTED_TRACK",
+              selectedTrack: r.item,
+            });
+            dispatch({
+              type: "SET_PLAYING",
+              playing: true,
+            });
+          });
+        });
+    };
+
   const playSong = (id) => {
+    console.log("songid", id);
     spotify
       .play({
         uris: [`spotify:track:${id}`],
@@ -30,8 +68,8 @@ function Body({ selectedPlaylist, spotify }) {
         spotify.getMyCurrentPlayingTrack().then((r) => {
           console.log(r);
           dispatch({
-            type: "SET_ITEM",
-            item: r.item,
+            type: "SELECTED_TRACK",
+            selectedTrack: r.item,
           });
           dispatch({
             type: "SET_PLAYING",
@@ -48,20 +86,33 @@ function Body({ selectedPlaylist, spotify }) {
       <div className="body__info">
         <img src={images?.url} alt="playlist_cover" />
         <div className="body__infoText">
-          <h2>{selectedPlaylist.name}</h2>
+          <h2>{selectedPlaylist?.name}</h2>
           <p>{selectedPlaylist?.description}</p>
         </div>
       </div>
-      {/* filter bar */}
+      <div className="body__songs">
+        <div className="body__icons">
+          <Tooltip title="Play Playlist">
+            <PlayCircleFilledIcon
+              className="body__shuffle"
+              onClick={playPlaylist}
+            />
+          </Tooltip>
+
+          <FavoriteIcon fontSize="large" />
+          <MoreHorizIcon />
+        </div>
+      </div>
       {/* List of songs with title, artist, album, date,
          duration of song and click of the item song should play */}
-      <InfiniteScroll dataLength={10}>
+      <InfiniteScroll dataLength={10} >
         {tracks ? (
           tracks?.items?.map((item) => (
             <SongRow
               track={item.track}
               playSong={playSong}
               key={item.track?.id}
+              parentCallBack={callback}
             />
           ))
         ) : (

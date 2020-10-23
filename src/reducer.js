@@ -7,7 +7,8 @@ export const initialState = {
     savedAlbums: [],
     myTopArtists: [],
     selectedPlaylist: {},
-    playedPlaylist: {}
+    playedPlaylist: {},
+    selectedTrack: {}
 };
 
 const reducer = (state, action) => {
@@ -65,7 +66,12 @@ const reducer = (state, action) => {
             return {
                 ...state,
                 playedPlaylist: action.playedPlaylist
-            }    
+            }
+        case 'SELECTED_TRACK':
+            return {
+                ...state,
+                selectedTrack: action.selectedTrack
+            }     
         default:
             return state;
     }

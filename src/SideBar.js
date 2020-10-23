@@ -8,35 +8,42 @@ import { getTokenFromResponse } from "./spotify";
 import { useDataLayerValue } from "./DataLayer";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-function SideBar({spotify}) {
+function SideBar({ spotify }) {
   const viewHeight = window.outerHeight;
   const [{ playlists, savedAlbums }, dispatch] = useDataLayerValue();
   const [selectedPlaylist, setSelectedPlaylist] = useState(null);
   console.log(savedAlbums);
 
   let callback = (value) => {
-    console.log("selectedPlaylist",value);
-    setSelectedPlaylist(value);
-    dispatch({
-      type: "SELECTED_PLAYLIST",
-      selectedPlaylist: value,
-    });
-  }
+    if(typeof value !== "string"){
+      console.log("selectedPlaylist", value);
+      setSelectedPlaylist(value);
+      dispatch({
+        type: "SELECTED_PLAYLIST",
+        selectedPlaylist: value,
+      });
+    }
+  };
 
   return (
     // <InfiniteScroll dataLength={50}>
-    <div
-      className="sidebar"
-      
-    >
+    <div className="sidebar">
       <img
         className="sidebar__logo"
         src="https://getheavy.com/wp-content/uploads/2019/12/spotify2019-830x350.jpg"
         alt=""
       />
-      <SideBarOption Icon={HomeIcon} option="Home" />
-      <SideBarOption Icon={SearchIcon} option="Search" />
-      <SideBarOption Icon={LibraryMusicIcon} option="Your Library" />
+      <SideBarOption Icon={HomeIcon} option="Home" parentCallBack={callback} />
+      <SideBarOption
+        Icon={SearchIcon}
+        option="Search"
+        parentCallBack={callback}
+      />
+      <SideBarOption
+        Icon={LibraryMusicIcon}
+        option="Your Library"
+        parentCallBack={callback}
+      />
       <br />
       <strong className="sidebar__title">PLAYLISTS</strong>
       <hr />
