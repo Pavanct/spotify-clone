@@ -8,7 +8,7 @@ import { getTokenFromResponse } from "./spotify";
 import { useDataLayerValue } from "./DataLayer";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-function SideBar() {
+function SideBar({spotify}) {
   const viewHeight = window.outerHeight;
   const [{ playlists, savedAlbums }, dispatch] = useDataLayerValue();
   const [selectedPlaylist, setSelectedPlaylist] = useState(null);
@@ -27,7 +27,7 @@ function SideBar() {
     // <InfiniteScroll dataLength={50}>
     <div
       className="sidebar"
-      style={{ height: viewHeight }}
+      
     >
       <img
         className="sidebar__logo"
@@ -57,13 +57,6 @@ function SideBar() {
           />
         ))} */}
       </InfiniteScroll>
-      {/* {savedAlbums?.items?.map((album) => (
-          <SideBarOption
-            option={album.album.name}
-            playlist={album.album}
-            key={album.album.name}
-          />
-        ))} */}
     </div>
     //{" "}
   );

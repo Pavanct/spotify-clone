@@ -28,7 +28,7 @@ function App() {
           user: user,
         });
       });
-
+      
       spotify.getUserPlaylists().then((playlists) => {
         console.log("playlists", playlists)
         dispatch({

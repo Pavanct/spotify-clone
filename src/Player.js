@@ -6,13 +6,13 @@ import Footer from "./Footer";
 import { useDataLayerValue } from "./DataLayer";
 
 function Player({ spotify }) {
-  const [{selectedPlaylist}] = useDataLayerValue();
- 
+  const [{ selectedPlaylist}] = useDataLayerValue();
+
   return (
     <div className="player">
       <div className="player_body">
         <SideBar spotify={spotify}/>
-        <Body selectedPlaylist={selectedPlaylist} spotify={spotify}/>
+        <Body selectedPlaylist={selectedPlaylist} spotify={spotify} />
       </div>
       <Footer />
     </div>
