@@ -13,6 +13,18 @@
   opacity: 0.8;
 }
 
+.songRow__selected {
+  cursor: pointer;
+  background-color:#186351;
+  opacity: 0.8;
+  margin-left: 20px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  z-index: 100;
+  color: white;
+}
+
 .songRow__info {
   margin-left: 20px;
 }
@@ -30,4 +42,9 @@
 .songRow__album {
   height: 40px;
   width: 40px;
+}
+
+.songDuration{
+  position: absolute;
+  right: 5%;
 }

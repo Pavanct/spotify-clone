@@ -15,12 +15,14 @@ function Body({ selectedPlaylist, spotify }) {
   const [progress, setProgress] = useState(null);
   const [selectedTrack, setSelectedTrack] = useState();
   const [{ playlists }, dispatch] = useDataLayerValue();
+  const [chosen, setChosen] = useState();
   console.log("selectedPlaylist", selectedPlaylist);
 
   let callback = (value) => {
     if (typeof value !== "string") {
       // console.log("selectedTrack", value);
       setSelectedTrack(value);
+      setChosen(value);
       playSong(value.id);
       dispatch({
         type: "SELECTED_TRACK",
@@ -117,6 +119,7 @@ function Body({ selectedPlaylist, spotify }) {
               playSong={playSong}
               key={item.track?.id}
               parentCallBack={callback}
+              track__selected={item.track === chosen}
             />
           ))
         ) : (
