@@ -7,21 +7,24 @@ function SideBarOption({
   Icon,
   playlist,
   parentCallBack,
+  sidebarOption__selected
 }) {
 
   const [item, setItem] = useState(null);
+
 
   function selectItem(item) {
     console.log("selected item name", item?.name);
     // setItem(item);
   }
+
   // useEffect(() => {
 
   // }, []);
 
   return (
     <div
-      className="sidebarOption"
+      className={sidebarOption__selected ? "sidebarOption__selected" : "sidebarOption" }
       onClick={() => (selectItem(playlist), parentCallBack(playlist))}
     >
       {Icon && <Icon className="sidebarOption__icon" />}

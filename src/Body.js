@@ -12,51 +12,53 @@ import { Tooltip } from "@material-ui/core";
 function Body({ selectedPlaylist, spotify }) {
   const [tracks, setTracks] = useState();
   const [images, setImages] = useState();
+  const [progress, setProgress] = useState(null);
   const [selectedTrack, setSelectedTrack] = useState();
   const [{ playlists }, dispatch] = useDataLayerValue();
   console.log("selectedPlaylist", selectedPlaylist);
 
-  
   let callback = (value) => {
     if (typeof value !== "string") {
       // console.log("selectedTrack", value);
       setSelectedTrack(value);
       playSong(value.id);
       dispatch({
-      type: "SELECTED_TRACK",
-      selectedTrack: value,
-    });
+        type: "SELECTED_TRACK",
+        selectedTrack: value,
+      });
     }
   };
 
-  useEffect( () => {
+  useEffect(() => {
     (async () => {
-    await spotify.getPlaylistTracks(selectedPlaylist?.id).then((tracks) => {
-      console.log("tracks", tracks);
-      setTracks(tracks);
-      setImages(selectedPlaylist.images[0]);
-    }); })()
-  }, [selectedPlaylist]) ;
+      await spotify.getPlaylistTracks(selectedPlaylist?.id).then((tracks) => {
+        console.log("tracks", tracks);
+        setTracks(tracks);
+        setImages(selectedPlaylist.images[0]);
+      });
+    })();
+  }, [selectedPlaylist]);
 
-
-    const playPlaylist = (id) => {
-      spotify
-        .play({
-          context_uri: selectedPlaylist?.uri,
-        })
-        .then((res) => {
-          spotify.getMyCurrentPlayingTrack().then((r) => {
-            dispatch({
-              type: "SELECTED_TRACK",
-              selectedTrack: r.item,
-            });
-            dispatch({
-              type: "SET_PLAYING",
-              playing: true,
-            });
+  const playPlaylist = (id) => {
+    setImages(selectedPlaylist.images[0]);
+    spotify
+      .play({
+        context_uri: selectedPlaylist?.uri,
+      })
+      .then((res) => {
+        spotify.getMyCurrentPlayingTrack().then((r) => {
+          setProgress(r.progress_ms);
+          dispatch({
+            type: "SELECTED_TRACK",
+            selectedTrack: r.item,
+          });
+          dispatch({
+            type: "SET_PLAYING",
+            playing: true,
           });
         });
-    };
+      });
+  };
 
   const playSong = (id) => {
     console.log("songid", id);
@@ -66,11 +68,13 @@ function Body({ selectedPlaylist, spotify }) {
       })
       .then((res) => {
         spotify.getMyCurrentPlayingTrack().then((r) => {
-          console.log(r);
+          // setProgress(r.progress_ms);
+          // console.log(r);
           dispatch({
             type: "SELECTED_TRACK",
             selectedTrack: r.item,
           });
+          // setTracks(r.item);
           dispatch({
             type: "SET_PLAYING",
             playing: true,
@@ -105,7 +109,7 @@ function Body({ selectedPlaylist, spotify }) {
       </div>
       {/* List of songs with title, artist, album, date,
          duration of song and click of the item song should play */}
-      <InfiniteScroll dataLength={10} >
+      <InfiniteScroll dataLength={10}>
         {tracks ? (
           tracks?.items?.map((item) => (
             <SongRow

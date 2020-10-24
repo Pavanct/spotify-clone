@@ -12,12 +12,14 @@ function SideBar({ spotify }) {
   const viewHeight = window.outerHeight;
   const [{ playlists, savedAlbums }, dispatch] = useDataLayerValue();
   const [selectedPlaylist, setSelectedPlaylist] = useState(null);
+  const [chosen, setChosen] = useState();
   console.log(savedAlbums);
 
   let callback = (value) => {
     if(typeof value !== "string"){
       console.log("selectedPlaylist", value);
       setSelectedPlaylist(value);
+      setChosen(value);
       dispatch({
         type: "SELECTED_PLAYLIST",
         selectedPlaylist: value,
@@ -26,7 +28,6 @@ function SideBar({ spotify }) {
   };
 
   return (
-    // <InfiniteScroll dataLength={50}>
     <div className="sidebar">
       <img
         className="sidebar__logo"
@@ -54,18 +55,12 @@ function SideBar({ spotify }) {
             playlist={playlist}
             key={playlist.name}
             parentCallBack={callback}
+            sidebarOption__selected={playlist === chosen}
           />
         ))}
-        {/* {savedAlbums?.items?.map((album) => (
-          <SideBarOption
-            option={album.album.name}
-            playlist={album.album}
-            key={album.album.name}
-          />
-        ))} */}
+        
       </InfiniteScroll>
     </div>
-    //{" "}
   );
 }
 
