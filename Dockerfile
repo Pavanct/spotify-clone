@@ -3,7 +3,12 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
 COPY . .
-RUN npm run build
+ARG CLIENT_ID
+ARG REDIRECT
+
+RUN REACT_APP_CLIENT_ID=${CLIENT_ID} \
+    REACT_APP_REDIRECT=${REDIRECT} \
+    npm run build
 
 FROM nginx:latest as prod_stage
 RUN sed -i 's,location / {,location / {try_files $uri $uri/ /index.html?/$request_uri;,g' /etc/nginx/conf.d/default.conf
